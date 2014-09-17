@@ -27,7 +27,7 @@ function ServiceDisplayManager($servicesContainer){
                             '<div id="service-' + s.Id + '"' + ' class="service ' + s.Id + '"' + ' style="background-color: ' + rgb + ';">' +
                             '<div class="container service-' + s.Id + ' loaded">' + s.Id + '<br/>' + s.Port + '</div>' +
                             '<div class="serviceText" onclick=showDetails("' + param + '")>cPort: ' + s.ContainerPort +'<br/>ExLB: ' + s.ExternalLoadBalancer + '<br/>selectors:' + selectors + '</div>' +
-                            '<div id="config-' + s.Id + '" style="height: 0px; visibility: hidden;">' + JSON.stringify(s.BaseObject,null, 7) + '</div>' +
+                            '<div id="config-' + s.Id + '" style="height: 0px; visibility: hidden;"><pre class="pre-scrollable">' + JSON.stringify(s.BaseObject,null, 7) + '</pre></div>' +
                             '</div>');
                 }
         }

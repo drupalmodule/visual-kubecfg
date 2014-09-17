@@ -186,6 +186,10 @@ io.on('connection', function(socket){
 	socket.on('get_services', function() {
 		socket.emit('services', services);
 	});
+      
+        socket.on('get_configs', function() {
+                socket.emit ('configs', configs);
+        });
 
 	socket.on('delete_all_pods', function() {
 		deleteRunningPods();

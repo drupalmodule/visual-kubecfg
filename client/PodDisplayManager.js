@@ -35,7 +35,8 @@ function PodDisplayManager($container){
 		}
 
 		// Get the width for each host
-		var width = 99/Object.keys(hosts).length;
+		var width = 96/Object.keys(hosts).length;
+		//var width = 99/Object.keys(hosts).length;
 
 		// Empty the current view
 		$container.empty();
@@ -53,7 +54,8 @@ function PodDisplayManager($container){
 				// $container.append($('<div class="nohost" id="host-' + i + '"></div>'));
 				nohost = true;
 			} else {
-				$container.append($('<div class="host" id="host-' + i + '" style="width:' + width + '%;"><span class="hostname">' + hostNames[h] + '</span></div>'));
+				$container.append($('<div class="panel panel-info" id="host-' + i + '" style="width:' + width + '%;"><div class="panel-heading">' + hostNames[h] + '</div></div>'));
+				//$container.append($('<div class="host" id="host-' + i + '" style="width:' + width + '%;"><span class="hostname">' + hostNames[h] + '</span></div>'));
 			}
 
 			var $host = nohost ? $('#nohost') : $('#host-' + i);
@@ -90,7 +92,7 @@ function PodDisplayManager($container){
 // Lou added currentState and onclick to the pod container
                                 var type="pods";
                                 var param = 'pod-' + j + ',' + type;
-                                var info = '<div id="config-pod-' + j + '" style="height: 0px; visibility: hidden;">' + JSON.stringify(pod.BaseObject.currentState,null, 7) + '</div>';
+                                var info = '<div id="config-pod-' + j + '" style="height: 0px; visibility: hidden;"><pre class="pre-scrollable">' + JSON.stringify(pod.BaseObject.currentState,null, 7) + '</pre></div>';
 				$host.append('<div id="pod-' + j + '" class="' + classes.join(' ') + '" onclick=showDetails("' + param + '")>' + innerhtml + info + '</div>');
 				j++;
 			}

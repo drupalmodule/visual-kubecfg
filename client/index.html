@@ -1,10 +1,17 @@
-<!doctype html>
-<html>
-	<head>
-		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+		
+                <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 		<link rel="stylesheet" type="text/css" href="pods.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="services.css" media="screen" />
 		<link rel="stylesheet" type="text/css" href="rcontrollers.css" media="screen" />
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"> 
+</head>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
 		<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.1.min.js"></script>
@@ -14,15 +21,17 @@
 		<script type="text/javascript" src="/PodDisplayManager.js"></script>
 		<script type="text/javascript" src="/ReplicationControllerDisplayManager.js"></script>
 		<script type="text/javascript" src="/ServiceDisplayManager.js"></script>
+		<script type="text/javascript" src="/FileSelect.js"></script>
+
+           
 <!-- Bootstrap Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"> 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 		<script type="text/javascript">
 
 			// UI elements initializations
 			var socket = io();
+                        var Configs=[];
 			$(function() {
 			      	
 				var DisplayManager = new PodDisplayManager($('#container'));
@@ -35,6 +44,7 @@
 				socket.emit('get_pods');
 				socket.emit('get_rControllers');
 				socket.emit('get_services');
+                                socket.emit('get_configs');
             
 				//socket.emit('get_base_config', getStartParameters());
 
@@ -49,6 +59,11 @@
 				socket.on('services', function(services) {
 					// console.log(services);
 					sDisplayManager.Update(services);
+				});
+				socket.on('configs', function(configs) {
+					console.log(configs);
+                                        FileSelect($('#modalcreatedetails'),configs);
+                                        Configs = configs; 
 				});
 
 // End configuration
@@ -72,6 +87,7 @@
 
 
 				// Init the json editor
+/*
 				var podEditor = ace.edit('create-config-editor');
 				podEditor.setTheme('ace/theme/monokai');
 				podEditor.getSession().setMode('ace/mode/json');
@@ -81,7 +97,7 @@
 				replicaEditor.setTheme('ace/theme/monokai');
 				replicaEditor.getSession().setMode('ace/mode/json');
 				document.getElementById('create-config-replica-editor').style.fontSize='14px';
-
+*/
 				// Initialize spinner (number of containers field)
 				var maxReps = 1000;
 				var numberOfContainers = 
@@ -110,28 +126,40 @@ var configdir = "/borg/collective/configs/prod";
 				$("#creatercontroller")
 					.button()
 					.click(function(event){
-						var startParams = getParams("rxwiki-controller.json", "create","replicationControllers");
+                                                var x = document.getElementById("select-ReplicationController").selectedIndex;
+                                                var y = document.getElementById("select-ReplicationController").options;
+                                                var id = y[x].value;
+ 
+						var startParams = getParams(id, "create","replicationControllers");
 						console.log("Requestiing kubecfg create replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
 					});
 				$("#createservice")
 					.button()
 					.click(function(event){
-						var startParams = getParams("rxwiki-service.json", "create","services");
+                                                var x = document.getElementById("select-Service").selectedIndex;
+                                                var y = document.getElementById("select-Service").options;
+                                                var id = y[x].value;
+
+						var startParams = getParams(id, "create","services");
 						console.log("Requestiing kubecfg create services " + startParams);
 						socket.emit("kubecfg", startParams);
 					});
 				$("#createpod")
 					.button()
 					.click(function(event){
-						var startParams = getParams("rxwiki-pod.json", "create","pods");
+                                                var x = document.getElementById("select-Pod").selectedIndex;
+                                                var y = document.getElementById("select-Pod").options;
+                                                var id = y[x].value;
+
+						var startParams = getParams(id, "create","pods");
 						console.log("Requestiing kubecfg create pods " + startParams);
 						socket.emit("kubecfg", startParams);
 					});
 				$("#deletercontroller")
 					.button()
 					.click(function(event){
-						var startParams = getParams(null, "resize","replicationControllers","rxwiki_blue",0);
+						var startParams = getParams(null, "resize","replicationControllers",$("#modalrcontrollerid").val(),0);
 						console.log("Requestiing kubecfg resize replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
 						startParams = getParams(null, "delete","replicationControllers","rxwiki_blue" );
@@ -141,21 +169,21 @@ var configdir = "/borg/collective/configs/prod";
 				$("#deleteservice")
 					.button()
 					.click(function(event){
-						var startParams = getParams(null, "delete","services","rxwiki");
+						var startParams = getParams(null, "delete","services",$("#modalserviceid").val());
 						console.log("Requestiing kubecfg delete services " + startParams);
 						socket.emit("kubecfg", startParams);
 					});
 				$("#deletepod")
 					.button()
 					.click(function(event){
-						var startParams = getParams(null, "delete","pods","rxwiki-files");
+						var startParams = getParams(null, "delete","pods",$("#modalpodid").val());
 						console.log("Requestiing kubecfg delete pods " + startParams);
 						socket.emit("kubecfg", startParams);
 					});
 				$("#resizercontroller")
 					.button()
 					.click(function(event){
-						var startParams = getParams(null, "resize","replicationControllers","rxwiki_blue", $("#number").val());
+						var startParams = getParams(null, "resize","replicationControllers",$("#modalrcontrollerid").val(), $("#number").val());
 						console.log("Requestiing kubecfg resize replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
 					});
@@ -344,12 +372,12 @@ var configdir = "/borg/collective/configs/prod";
 								<button id="show-pod-source">Pod Source</button>
 								<button id="show-rc-source">RC Source</button>
 							</th> -->
-							<td>
+				<!--			<td>
 								<button id="creatercontroller" class="btn btn-primary">Create rController</button>
 								<button id="createservice" class="btn btn-primary">Create Service</button>
 								<button id="createpod" class="btn btn-primary">Create Pod</button>
-					<!--			<button id="start-from-source" style="display:none">Create from Source</button>  --> 
-							</td>
+								<button id="start-from-source" style="display:none">Create from Source</button>  
+							</td> -->
 						</tr>
 					</tbody>
 				</table>
@@ -373,29 +401,41 @@ var configdir = "/borg/collective/configs/prod";
                                     var p = param.split(',');
                                     var id=p[0];
                                     var type=p[1];
-                                    var config = document.getElementById('config-'+ id).innerHTML; 
+                                    if (type != "create"){
+                                        config = document.getElementById('config-'+ id).innerHTML; 
+                                    }else{ 
+                                        var config="";
+                                    }
+                                      
 
                                     switch (type){
                                         case 'replicationControllers':
                                               var modalrcontrollerdetails = document.getElementById("modalrcontrollerdetails");
                                               modalrcontrollerdetails.innerHTML = "id= " + id + " type= " + type + "<code>" + config + "</code>";
+                                              document.getElementById("modalrcontrollerid").value=id;
                                               $('#modalrcontrollers').modal();
                                               break;
                                         case 'services':
                                               var modalservicedetails = document.getElementById("modalservicedetails");
                                               modalservicedetails.innerHTML = "id= " + id + " type= " + type + "<code>" + config + "</code>";
+                                              document.getElementById("modalserviceid").value=id;
                                               $('#modalservices').modal();
                                                 break;
                                         case 'pods':  
                                               var modalpoddetails = document.getElementById("modalpoddetails");
                                               modalpoddetails.innerHTML = "id= " + id + " type= " + type + "<code>" + config + "</code>";
+                                              document.getElementById("modalpodid").value=id;
                                               $('#modalpods').modal();
+                                              break;
+                                        case 'create':
+                                              $('#modalcreate').modal();
                                               break;
                                         default:
                                                 break;
                                        }
                                 }
 </script>
+<p onclick="showDetails('create,create')">CLICKME</p>
 <div class="modal fade" id="modalrcontrollers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
     <div class="modal-dialog"> 
         <div class="modal-content"> 
@@ -418,6 +458,7 @@ var configdir = "/borg/collective/configs/prod";
                     <input id="number" name="number" >
                     <button id="resizercontroller" class="btn btn-default">Resize</button>
                     <button id="deletercontroller" class="btn btn-default">Delete</button>
+                    <input id="modalrcontrollerid" name="modalrcontrollerid" value="replaceme" style="visibility: hidden; height: 0px; width: 0px;" >
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button> 
                 </div>
             </div> 
@@ -439,6 +480,7 @@ var configdir = "/borg/collective/configs/prod";
                 <div>
                     <button id="deleteservice" class="btn btn-default">Delete</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button> 
+                    <input id="modalserviceid" name="modalserviceid" value="replaceme" style="visibility: hidden; height: 0px; width: 0px;" > 
                 </div>
             </div> 
         </div>
@@ -458,6 +500,8 @@ var configdir = "/borg/collective/configs/prod";
             <div class="modal-footer"> 
                 <div>
                <!--     <button id="deletepod" class="btn btn-default">Delete</button> -->
+                    <input id="modalpodid" name="modalpodid" value="replaceme">
+                    <!-- <input id="modalpodid" name="modalpodid" value="replaceme" style="visibility: hidden; height: 0px; width: 0px;" > -->
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button> 
                 </div>
             </div> 
@@ -465,7 +509,31 @@ var configdir = "/borg/collective/configs/prod";
     </div>
 </div>
 
-
-
+<div class="modal fade" id="modalcreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalcreateLabel">Create</h4>
+            </div>
+            <div class="modal-body">
+                <div id="modalcreatedetails">
+                    <div id="modalcreateinput">
+                        <div> <div id="select-ReplicationController-container"> </div>  <button id="creatercontroller" class="btn btn-primary">Create rController</button> </div>
+                        <div> <div id="select-Service-container"> </div>  <button id="createservice" class="btn btn-primary">Create Service</button> </div>
+                        <div> <div id="select-Pod-container"> </div>  <button id="createrpod" class="btn btn-primary">Create Pod</button> </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div>
+                    <input id="modalcreateid" name="modalcreateid" value="replaceme">
+                    <!-- <input id="modalpodid" name="modalpodid" value="replaceme" style="visibility: hidden; height: 0px; width: 0px;" > -->
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

@@ -31,11 +31,8 @@ function ReplicationControllerDisplayManager($rControllersContainer){
                             '<div id="rcontroller-' + r.Id + '"' + ' class="rcontroller ' + r.Id + '"' + ' style="background-color: ' + rgb + '; data-toggle="modal" data-target="#rcontrollermodal">' +
                             '<div class="container rcontroller-' + r.Id + ' loaded">' + 'rController<br/>' + r.Id + '</div>' + 
                             '<div class="rcontrollerText" onclick=showDetails("'+ param + '") >Replicas: ' + r.Replicas  + '<br/>selectors:' + selectors + '<br/>Labels:' + labels + '</div>' +
-                            '<div id="config-' + r.Id + '" style="height: 0px; visibility: hidden;">' + JSON.stringify(r.BaseObject.desiredState,null, 7) + '</div>' +
+                            '<div id="config-' + r.Id + '" style="height: 0px; visibility: hidden;"><pre class="pre-scrollable">' + JSON.stringify(r.BaseObject.desiredState,null, 7) + '</pre></div>' +
                             '</div>');
-
-console.log(r.BaseObject);
-
                 }
 }
         return obj;
