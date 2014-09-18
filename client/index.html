@@ -132,6 +132,7 @@
 						var startParams = getParams(id, "create","replicationControllers");
 						console.log("Requestiing kubecfg create replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
+                                                $('#modalcreate').modal('hide');
 					});
 				$("#createservice")
 					.button()
@@ -143,6 +144,7 @@
 						var startParams = getParams(id, "create","services");
 						console.log("Requestiing kubecfg create services " + startParams);
 						socket.emit("kubecfg", startParams);
+                                                $('#modalcreate').modal('hide');
 					});
 				$("#createpod")
 					.button()
@@ -154,6 +156,7 @@
 						var startParams = getParams(id, "create","pods");
 						console.log("Requestiing kubecfg create pods " + startParams);
 						socket.emit("kubecfg", startParams);
+                                                $('#modalcreate').modal('hide');
 					});
 				$("#deletercontroller")
 					.button()
@@ -164,6 +167,7 @@
 						startParams = getParams(null, "delete","replicationControllers","rxwiki_blue" );
 						console.log("Requestiing kubecfg delete replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
+                                                $('#modalrcontrollers').modal('hide');
 					});
 				$("#deleteservice")
 					.button()
@@ -171,6 +175,7 @@
 						var startParams = getParams(null, "delete","services",$("#modalserviceid").val());
 						console.log("Requestiing kubecfg delete services " + startParams);
 						socket.emit("kubecfg", startParams);
+                                                $('#modalservices').modal('hide');
 					});
 				$("#deletepod")
 					.button()
@@ -178,6 +183,7 @@
 						var startParams = getParams(null, "delete","pods",$("#modalpodid").val());
 						console.log("Requestiing kubecfg delete pods " + startParams);
 						socket.emit("kubecfg", startParams);
+                                                $('#modalpods').modal('hide');
 					});
 				$("#resizercontroller")
 					.button()
@@ -185,6 +191,7 @@
 						var startParams = getParams(null, "resize","replicationControllers",$("#modalrcontrollerid").val(), $("#number").val());
 						console.log("Requestiing kubecfg resize replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
+                                                $('#modalrcontrollers').modal('hide');
 					});
 /*
 				$("#start-from-source")
@@ -358,6 +365,8 @@
 							<th>
 							</th>
 							<td>
+                                                            <p onclick="showDetails('create,create')">CLICKME</p>
+
 							</td>
 						</tr>
 						<tr>
@@ -434,7 +443,6 @@
                                        }
                                 }
 </script>
-<p onclick="showDetails('create,create')">CLICKME</p>
 <div class="modal fade" id="modalrcontrollers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> 
     <div class="modal-dialog"> 
         <div class="modal-content"> 
@@ -516,9 +524,9 @@
                 <h4 class="modal-title" id="myModalcreateLabel">Create</h4>
             </div>
             <div class="modal-body">
-                <div id="modalcreatedetails">
-                    <div id="modalcreateinput">
-                        <div> <div id="select-ReplicationController-container"> </div>  <button id="creatercontroller" class="btn btn-primary">Create rController</button> </div>
+                <div id="modalcreatedetails" style="width: 100%;">
+                    <div id="modalcreateinput" style="width: 100%;" >
+                        <div style="width: 100%;"> <div id="select-ReplicationController-container"> </div>  <div style="display: inline;"><button id="creatercontroller" class="btn btn-primary">Create rController</button> </div></div>
                         <div> <div id="select-Service-container"> </div>  <button id="createservice" class="btn btn-primary">Create Service</button> </div>
                         <div> <div id="select-Pod-container"> </div>  <button id="createrpod" class="btn btn-primary">Create Pod</button> </div>
                     </div>
