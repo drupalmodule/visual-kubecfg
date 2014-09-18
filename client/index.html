@@ -76,7 +76,7 @@
                                         Operation: operation,
                                         Replicas: replicas, 
                                         Image: "",
-                                        AbsFileName: configdir + "/" + filename,
+                                        AbsFileName: filename,
                                         Labels: { Id: podId },
                                         RawRequest: null
                                                 };
@@ -121,7 +121,6 @@
 							}
 						})
 						.spinner("value", 1);
-var configdir = "/borg/collective/configs/prod";
 				// Initialize creatercontroller  button
 				$("#creatercontroller")
 					.button()
@@ -352,7 +351,7 @@ var configdir = "/borg/collective/configs/prod";
 	<body>
 		<div id="top-frame">
 			<div id="create" class="top-ui">
-				<h3>Visual kubecfg</h3>
+				<h3><image src="/images/logo.png" style="height: 75px; width:75px;"> Visual kubecfg</h3>
 				<table id="create-form">
 					<tbody>
 						<tr>
