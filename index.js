@@ -172,7 +172,7 @@ io.on('connection', function(socket){
 	socket.on('kubecfg', function(startParams) {
 		cli.info("Recieved kubecfg signal" );
 
-		kubecfg(startParams);
+		kubecfg(socket, startParams);
 	});
 
 	socket.on('get_pods', function() {

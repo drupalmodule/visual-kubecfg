@@ -65,6 +65,11 @@
                                         FileSelect($('#modalcreatedetails'),configs);
                                         Configs = configs; 
 				});
+				socket.on('kubecfgStatus', function(status) {
+					console.log(status);
+                                        fillTopAlert(status);
+				});
+
 
 // End configuration
 
@@ -357,54 +362,24 @@
 	</head>
 	<body>
 		<div id="top-frame">
-			<div id="create" class="top-ui">
-				<h3><image src="/images/logo.png" style="height: 75px; width:75px;"> Visual kubecfg</h3>
-				<table id="create-form">
-					<tbody>
-						<tr>
-							<th>
-							</th>
-							<td>
-                                                            <p onclick="showDetails('create,create')">CLICKME</p>
-
-							</td>
-						</tr>
-						<tr>
-							<th>
-							</th>
-							<td>
-							</td>
-						</tr>
-						<tr>
-					<!--		<th>
-								<button id="show-pod-source">Pod Source</button>
-								<button id="show-rc-source">RC Source</button>
-							</th> -->
-				<!--			<td>
-								<button id="creatercontroller" class="btn btn-primary">Create rController</button>
-								<button id="createservice" class="btn btn-primary">Create Service</button>
-								<button id="createpod" class="btn btn-primary">Create Pod</button>
-								<button id="start-from-source" style="display:none">Create from Source</button>  
-							</td> -->
-						</tr>
-					</tbody>
-				</table>
+			<div class="top-ui">
+				<h3><image src="/images/logo.png" style="height: 75px; width:75px;"> Visual kubecfg</h3> 
 			</div>
-			<div class="top-ui source-container pod-source-container" style="display: none">
-				<h3>Pod Source</h3>
-				<div class="config-editor" id="create-config-editor"></div>
-			</div>
-			<div class="top-ui source-container rc-source-container" style="display: none">
-				<h3>ReplicationController Source</h3>
-				<div class="config-editor" id="create-config-replica-editor"></div>
-			</div>
-			<div id="nohost"></div>
-
-		</div>
+                         <div style="display: inline; float: right;"><button type="button" class="btn btn-primary" onclick="showDetails('create,create')">Create</button> </div>
+                         <div id="topalert" style="height:55px;"><!-- replace content with a message via javascript --></div>
+                </div>
         <div id="rControllersContainer"></div>
         <div id="servicesContainer"></div>        
+
+	<div id="nohost"></div>
         <div id="container"></div>
 <script>
+function fillTopAlert(status){
+    var topalert = document.getElementById("topalert");    
+    var alerttype="alert-success";
+        topalert.innerHTML = '<div class="alert ' + alerttype + '"><button type="button" class="close" data-dismiss="alert">&times;</button>' + status + '</div>';
+
+}
                                 function showDetails(param) {
                                     var p = param.split(',');
                                     var id=p[0];
