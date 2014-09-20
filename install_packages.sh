@@ -16,4 +16,5 @@
 # limitations under the License.
 # ========================================================================
 
-npm install express socket.io flavored-path cli needle
+npm install express socket.io flavored-path cli needle json-gate
+

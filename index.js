@@ -194,23 +194,7 @@ io.on('connection', function(socket){
 	socket.on('delete_all_pods', function() {
 		deleteRunningPods();
 	});
-/*
-	socket.on('get_base_config', function(startParameters){
-		var createRequest = new PodCreateRequest(startParameters);
-		
-		if (createRequest == null || typeof createRequest !== 'object' || Object.keys(createRequest).length === 0) {
-			cli.error("Error: Invalid input for PodCreateRequest " + JSON.stringify(startParameters) + " " +  JSON.stringify(createRequest));
-			return;
-		}
 
-		socket.emit(
-			'set_base_config', 
-			{ 
-				'pods': GetPodConfigObject(createRequest, 1337, 'pods'), 
-				'replicas': GetPodConfigObject(createRequest, 1337, 'replicas') 
-			});
-	});
-*/
 	socket.on('disconnect', function () {
 		cli.debug("User disconnected");
 		var index = sockets.indexOf(socket);
