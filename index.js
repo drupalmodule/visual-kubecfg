@@ -140,7 +140,7 @@ var fs = require('fs');
 
 eval(fs.readFileSync('./lib/get.js')+'');
 eval(fs.readFileSync('./lib/delete.js')+'');
-eval(fs.readFileSync('./lib/create_new.js')+'');
+eval(fs.readFileSync('./lib/kubecfg.js')+'');
 eval(fs.readFileSync('./lib/define_objects.js')+'');
 eval(fs.readFileSync('./lib/config_files.js')+'');
 eval(fs.readFileSync('./lib/rest.js')+'');

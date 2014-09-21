@@ -1,5 +1,4 @@
-var rawRcSchema =
-{
+rcschema={
   "$schema": "http://json-schema.org/draft-03/schema",
   "type": "object",
   "required": false,
@@ -28,7 +27,7 @@ var rawRcSchema =
       "properties": {
         "replicas": {
           "type": "number",
-          "required": false,
+          "required": true,
           "description": "Number of pods desired in the set"
         },
         "replicaSelector": {
@@ -50,4 +49,3 @@ var rawRcSchema =
   }
 }
 ;
-return rawRcSchema;

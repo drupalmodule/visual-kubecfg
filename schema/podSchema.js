@@ -1,4 +1,4 @@
-var rawPodSchema = 
+rawPodSchema = 
 {
   "$schema": "http://json-schema.org/draft-03/schema",
   "type": "object",
@@ -87,4 +87,3 @@ var rawPodSchema =
   }
 }
 ;
-return rawPodSchema;

@@ -1,33 +1,34 @@
-var rawManifestSchema = 
+rawManifestSchema = 
 {
-  "$schema": "http://json-schema.org/draft-04/schema",
   "type": "object",
   "description": "Manifest describing group of [Docker containers](http://docker.io); also used by [Google Cloud Platform's container-vm images](https://developers.google.com/compute/docs/containers).",
   "properties": {
     "version": {
       "type": "string",
       "description": "The version of the manifest.",
-      "enum": [
-        "v1beta1"
-      ]
+      "enum": [ "v1beta1" ],
+      "required": true
+    },
+    "id": {
+      "type": "string",
+       "description": "The id of the manifest.",
+       "required": true
     },
     "containers": {
       "type": "array",
       "description": "The list of containers to launch.",
       "items": {
         "type": "object",
-        "required": [
-          "name", 
-          "image"
-        ],
         "properties": {
           "name": {
             "type": "string",
-            "description" : "A symbolic name used to create and track the container. Must be an RFC1035 compatible value (a single segment of a DNS name). All containers must have unique names."
+            "description" : "A symbolic name used to create and track the container. Must be an RFC1035 compatible value (a single segment of a DNS name). All containers must have unique names.",
+            "required": true
           }, 
           "image": {
             "type": "string",
-            "description" : "The container image to run."
+            "description" : "The container image to run.",
+            "required": true
           }, 
           "command": {
             "type": "array",
@@ -112,14 +113,11 @@ var rawManifestSchema =
       "uniqueItems": true,
       "items": {
         "type": "object",
-        "required": [
-          "name"
-        ],
         "properties": {
           "name": {
             "type": "string",
             "description" : "The name of the volume. Must be an RFC1035 compatible value (a single segment of a DNS name). All volumes must have unique names. These are referenced by `containers[].volumeMounts[].name`.",
-            "pattern": "^[a-z]([-a-z0-9]*[a-z0-9])*"
+            "pattern": "^[a-z]([-a-z0-9]*[a-z0-9])*",
           }
         }
       }
@@ -128,4 +126,3 @@ var rawManifestSchema =
 }
 ;
 
-return rawManifestSchema;
