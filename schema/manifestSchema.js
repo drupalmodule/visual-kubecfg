@@ -1,4 +1,3 @@
-rawManifestSchema = 
 {
   "type": "object",
   "description": "Manifest describing group of [Docker containers](http://docker.io); also used by [Google Cloud Platform's container-vm images](https://developers.google.com/compute/docs/containers).",
@@ -124,5 +123,4 @@ rawManifestSchema =
     }
   }
 }
-;
 
