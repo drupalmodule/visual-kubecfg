@@ -45,7 +45,7 @@ function createSelect(configsbytype, type) {
 
         for (var i in configsbytype){
             var value=configsbytype[i].AbsFileName;
-            var text=configsbytype[i].Id;
+            var text=configsbytype[i].Id + " in " + configsbytype[i].DispFileName;
             x+='<option value=' + value + '>' + text + '</option>';
 
         }
