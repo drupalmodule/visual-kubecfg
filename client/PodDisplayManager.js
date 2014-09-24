@@ -18,15 +18,19 @@ function PodDisplayManager($container){
 	var obj = {};
 	var podColors = {};
 	
-	obj.Update = function(pods) {
+	obj.Update = function(pods, minions) {
 		// Sort the pods so they don't jump around randomly
 		pods.sort(function (a, b) { return a.Name < b.Name; });
 
 		// Get all of the different hosts
 		var hosts = {};
+                // LOU get all the host info from minions
+                for (var m in minions){
+                    var h = (typeof minions[m].Id === 'string' ? minions[m].Id : '').split('.')[0];
+                    hosts[h]=[];
+                }
 		for (var p in pods) {
 			var host = (typeof pods[p].Host === 'string' ? pods[p].Host : '').split('.')[0];
-
 			if (host in hosts) {
 				hosts[host].push(pods[p]);
 			} else {

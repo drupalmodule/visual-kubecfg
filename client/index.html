@@ -32,6 +32,7 @@
 			// UI elements initializations
 			var socket = io();
                         var Configs=[];
+                        Minions=[];
 			$(function() {
 			      	
 				var DisplayManager = new PodDisplayManager($('#container'));
@@ -40,7 +41,7 @@
 
 				var podId = Math.floor( Math.random() * 100000000000000 );
 				var disableEditorChangeEvent = true;
-				
+			        socket.emit('get_minions');	
 				socket.emit('get_pods');
 				socket.emit('get_rControllers');
 				socket.emit('get_services');
@@ -48,9 +49,13 @@
             
 				//socket.emit('get_base_config', getStartParameters());
 
+                                socket.on('minions', function(minions) {
+                                        Minions=minions;
+                                        console.log(minions);
+                                });
 				socket.on('pods', function(pods) {
 					//console.log(pods);
-					DisplayManager.Update(pods);
+					DisplayManager.Update(pods,Minions);
 				});
 				socket.on('rControllers', function(rControllers) {
 					// console.log(rController);

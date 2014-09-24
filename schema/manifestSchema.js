@@ -116,7 +116,7 @@
           "name": {
             "type": "string",
             "description" : "The name of the volume. Must be an RFC1035 compatible value (a single segment of a DNS name). All volumes must have unique names. These are referenced by `containers[].volumeMounts[].name`.",
-            "pattern": "^[a-z]([-a-z0-9]*[a-z0-9])*",
+            "pattern": "^[a-z]([-a-z0-9]*[a-z0-9])*"
           }
         }
       }

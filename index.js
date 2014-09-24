@@ -26,7 +26,7 @@ var fs = require('fs');
 var spawn = require('child_process').spawn;
 var path = require("flavored-path");
 var cli = require("cli").enable('status');
-
+server_root=__dirname;
 var queuedConnection = require('./lib/QueuedConnection.js');
 var portmanager = require("./lib/PortManager.js");
 
@@ -66,6 +66,7 @@ for (var option in appOptions) {
 var listenPort = options.ListenPort;
 
 var sockets = [];
+var minions=[];
 var pods = [];
 var rControllers = [];
 var services= [];
@@ -149,12 +150,14 @@ eval(fs.readFileSync('./lib/rest.js')+'');
 var configs=loadFiles(configs_dir); 
 
 // Setup tasks that need to occur on an interval
+queryRunningMinions();
 queryRunningPods();
 queryRunningServices();
 queryRunningReplicationControllers();
 
 cli.debug("Querying running pods every " + options.PodRefreshInterval + " milliseconds");
 setInterval(function(){
+        queryRunningMinions();
 	queryRunningPods();
         queryRunningServices();
         queryRunningReplicationControllers();
@@ -173,6 +176,10 @@ io.on('connection', function(socket){
 		cli.info("Recieved kubecfg signal" );
 
 		kubecfg(socket, startParams);
+	});
+
+	socket.on('get_minions', function() {
+		socket.emit('minions', minions);
 	});
 
 	socket.on('get_pods', function() {
