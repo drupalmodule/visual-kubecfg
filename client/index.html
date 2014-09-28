@@ -174,7 +174,7 @@
 						var startParams = getParams(null, "resize","replicationControllers",$("#modalrcontrollerid").val(),0);
 						console.log("Requestiing kubecfg resize replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
-						startParams = getParams(null, "delete","replicationControllers","rxwiki_blue" );
+						startParams = getParams(null, "delete","replicationControllers",$("#modalrcontrollerid").val() );
 						console.log("Requestiing kubecfg delete replicationControllers " + startParams);
 						socket.emit("kubecfg", startParams);
                                                 $('#modalrcontrollers').modal('hide');
@@ -508,7 +508,7 @@ function fillTopAlert(status){
                     <div id="modalcreateinput" style="width: 100%;" >
                         <div style="width: 100%;"> <div id="select-ReplicationController-container"> </div>  <div style="display: inline;"><button id="creatercontroller" class="btn btn-primary">Create rController</button> </div></div>
                         <div> <div id="select-Service-container"> </div>  <button id="createservice" class="btn btn-primary">Create Service</button> </div>
-                        <div> <div id="select-Pod-container"> </div>  <button id="createrpod" class="btn btn-primary">Create Pod</button> </div>
+                        <div> <div id="select-Pod-container"> </div>  <button id="createpod" class="btn btn-primary">Create Pod</button> </div>
                     </div>
                 </div>
             </div>

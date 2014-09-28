@@ -26,10 +26,17 @@ var fs = require('fs');
 var spawn = require('child_process').spawn;
 var path = require("flavored-path");
 var cli = require("cli").enable('status');
-server_root=__dirname;
-var queuedConnection = require('./lib/QueuedConnection.js');
-var portmanager = require("./lib/PortManager.js");
 
+// microsoft libs to eliminate
+var queuedConnection = require('QueuedConnection');
+var portmanager = require("PortManager");
+eval(fs.readFileSync('./lib/get.js')+'');
+// new replacement libs
+var kuberest = require('kuberest');
+var kubecfg = require('kubecfg');
+var loadfiles = require('loadFiles');
+
+server_root=__dirname;
 var appOptions = {
 	'KubernetesServer': ['s', 'URL of the Kubernetes Server', 'url'],
 	'NumMinions': ['m', 'Number of minions in Kubernetes cluster', 'number'],
@@ -44,6 +51,7 @@ var appOptions = {
 	'MaxReplicas': ['r', 'The maximum number of replicas the server will allow a client to create at once', 'number', 300],
 	'DefaultImage': ['i', 'The default docker image to use when creating pods', 'string', 'dockerfile/nginx'],
 };
+var configs_dir='/borg/collective/configs/prod';
 
 var options = process.clioptions = cli.parse(appOptions);
 
@@ -66,10 +74,10 @@ for (var option in appOptions) {
 var listenPort = options.ListenPort;
 
 var sockets = [];
-var minions=[];
-var pods = [];
-var rControllers = [];
-var services= [];
+minions=[];
+pods = [];
+rControllers = [];
+services= [];
 
 var createMode = 'pods';
 var MaxReplicas = options.MaxReplicas;
@@ -140,14 +148,12 @@ console.log();
 var fs = require('fs');
 
 eval(fs.readFileSync('./lib/get.js')+'');
-eval(fs.readFileSync('./lib/delete.js')+'');
-eval(fs.readFileSync('./lib/kubecfg.js')+'');
-eval(fs.readFileSync('./lib/define_objects.js')+'');
-eval(fs.readFileSync('./lib/config_files.js')+'');
-eval(fs.readFileSync('./lib/rest.js')+'');
 
+//kuberest = require('kuberest');
+kubecfg = require('kubecfg');
+loadfiles = require('loadFiles');
 //TODO Move to periodic checking (see section below)
-var configs=loadFiles(configs_dir); 
+configs=loadfiles.loadconfigs(configs_dir); 
 
 // Setup tasks that need to occur on an interval
 queryRunningMinions();
@@ -174,8 +180,7 @@ io.on('connection', function(socket){
 	
 	socket.on('kubecfg', function(startParams) {
 		cli.info("Recieved kubecfg signal" );
-
-		kubecfg(socket, startParams);
+		kubecfg.command(socket, startParams, restOptions);
 	});
 
 	socket.on('get_minions', function() {
@@ -198,9 +203,9 @@ io.on('connection', function(socket){
                 socket.emit ('configs', configs);
         });
 
-	socket.on('delete_all_pods', function() {
-		deleteRunningPods();
-	});
+	//socket.on('delete_all_pods', function() {
+	//	deleteRunningPods();
+	//});
 
 	socket.on('disconnect', function () {
 		cli.debug("User disconnected");
@@ -215,6 +220,49 @@ httpServer.listen(listenPort, function(){
 	cli.info('K8s Visualizer server listening on *:' + listenPort);
 });
 
+
+// Define Objects
+function Pod(Name, Images, Host, Labels, BaseObject) {
+        return {
+                'Name': typeof Name === 'string' ? Name : '',
+                'Images': typeof Images === 'object' ? Images : [],
+                'Host': typeof Host === 'string' ? Host : '',
+                'Labels': typeof Labels === 'object' ? Labels : {},
+                'CreateStatus': BaseObject.desiredState.manifest.id in activeOperations ? activeOperations[BaseObject.desiredState.manifest.id] : false,
+                'BaseObject': typeof BaseObject === 'object' ? BaseObject : {}
+        };
+}
+
+function RController(Id, Replicas, Labels, Selectors, BaseObject) {
+        return {
+                'Id': typeof Id === 'string' ? Id : '',
+                'Replicas': typeof Replicas === 'number' ? Replicas : '',
+                'Labels': typeof Labels === 'object' ? Labels : {},
+                'Selectors': typeof Selectors === 'object' ? Selectors : {},
+                'BaseObject': typeof BaseObject === 'object' ? BaseObject : {}
+        };
+}
+
+function Service(Id, Port, ContainerPort, ExternalLoadBalancer, Labels, Selectors, BaseObject) {
+        return {
+                'Id': typeof Id === 'string' ? Id : '',
+                'Port': typeof Port === 'number' ? Port : '',
+                'ContainerPort': typeof ContainerPort === 'number' ? ContainerPort : '',
+                'ExternalLoadBalancer': typeof ExternalLoadBalancer === 'boolean' ? ExternalLoadBalancer : '',
+                'Labels': typeof Labels === 'object' ? Labels : {},
+                'Selectors': typeof Selectors === 'object' ? Selectors : {},
+                'BaseObject': typeof BaseObject === 'object' ? BaseObject : {}
+        };
+}
+
+function Minion(Id){
+        return {
+                'Id': typeof Id === 'string' ? Id : '',
+        };
+}
+
+// More code below to rework / delete
+//======================================================================
 var allowOperationStatusChecks = true;
 var activeOperationQueries = {};
 function CheckActiveOperationStatuses() {
