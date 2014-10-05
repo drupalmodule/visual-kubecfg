@@ -30,7 +30,8 @@ var cli = require("cli").enable('status');
 // microsoft libs to eliminate
 var queuedConnection = require('QueuedConnection');
 var portmanager = require("PortManager");
-eval(fs.readFileSync('./lib/get.js')+'');
+var getlists = require('get_new.js');
+//eval(fs.readFileSync('./lib/get_new.js')+'');
 // new replacement libs
 var kuberest = require('kuberest');
 var kubecfg = require('kubecfg');
@@ -144,29 +145,25 @@ cli.info("Using " + options.DefaultImage + " as the default image when creating 
 cli.info("Expected number of kubernetes minions: " + options.NumMinions);
 console.log();
 
-/// Include functions from subfiles - just until I rewrite them and move them into modules - just step 1 in refactoring
-var fs = require('fs');
-
-eval(fs.readFileSync('./lib/get.js')+'');
-
-//kuberest = require('kuberest');
-kubecfg = require('kubecfg');
-loadfiles = require('loadFiles');
 //TODO Move to periodic checking (see section below)
 configs=loadfiles.loadconfigs(configs_dir); 
 
-// Setup tasks that need to occur on an interval
-queryRunningMinions();
-queryRunningPods();
-queryRunningServices();
-queryRunningReplicationControllers();
+// Setup tasks that need to occur on an intervat=require('kuberest');
+
+
+//queryRunningMinions(restOptions);
+kuberest.k8list(restOptions, "v1beta1", "minions", getlists.parseListQueryOutput);
+//queryRunningPods();
+//queryRunningServices();
+//queryRunningReplicationControllers();
 
 cli.debug("Querying running pods every " + options.PodRefreshInterval + " milliseconds");
 setInterval(function(){
-        queryRunningMinions();
-	queryRunningPods();
-        queryRunningServices();
-        queryRunningReplicationControllers();
+//        queryRunningMinions(restOptions);
+        kuberest.k8list(restOptions, "v1beta1", "minions",getlists.parseListQueryOutput);
+//	queryRunningPods();
+//        queryRunningServices();
+//        queryRunningReplicationControllers();
 }, options.PodRefreshInterval);
 
 cli.debug("Querying running operations every " + options.OperationRefreshInterval + " milliseconds");
